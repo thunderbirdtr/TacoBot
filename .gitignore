@@ -8,4 +8,7 @@ taco_base.db
 *.db-journal
 .env
 TacoBot.session
-
+config.ini
+*.session
+*.sqlite
+.vscode

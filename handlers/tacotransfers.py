@@ -21,7 +21,7 @@ from chattools import store_name, get_cid, ensure_no_at_sign, ensure_username, g
 default_taco_amount = config('DEFAULT_TACOS', default=50, cast=int)
 
 
-def give_tacos(bot, message, sender, receiver):
+async def give_tacos(bot, message, sender, receiver):
     cid = get_cid(message)
     tacos = Tacos.get(Tacos.chat == cid)
 
@@ -36,7 +36,7 @@ def give_tacos(bot, message, sender, receiver):
         receiver_name = "@" + receiver.username
 
     if receiver.is_bot:  # no tacos for bots
-        bot.send_message(chat_id=cid,
+        await bot.send_message(chat_id=cid,
                          text=no_bots_allowed_phrase,
                          reply_to_message_id=get_mid(message),
                          parse_mode='html')
@@ -46,7 +46,7 @@ def give_tacos(bot, message, sender, receiver):
     receiver_id = str(receiver.id)
 
     if sender_id == receiver_id:  # self-tacoing is forbidden
-        bot.send_message(chat_id=cid,
+        await bot.send_message(chat_id=cid,
                          text=self_tacoing_phrase,
                          reply_to_message_id=get_mid(message),
                          parse_mode='html')
@@ -68,7 +68,7 @@ def give_tacos(bot, message, sender, receiver):
             amounts.update({receiver_id: default_taco_amount})
 
     if tacos_sent > amounts.get(sender_id):  # can't send more than you have
-        bot.send_message(chat_id=cid,
+        await bot.send_message(chat_id=cid,
                          text=balance_low_phrase,
                          reply_to_message_id=get_mid(message),
                          parse_mode='html')
@@ -86,7 +86,7 @@ def give_tacos(bot, message, sender, receiver):
     else:
         comment = taco_transfer_comment_medium.format(receiver_name)
 
-    bot.send_message(chat_id=cid,
+    await bot.send_message(chat_id=cid,
                      text=taco_transfer_phrase.format(tacos_sent, receiver_name, comment),
                      reply_to_message_id=get_mid(message),
                      parse_mode='html')
@@ -95,7 +95,7 @@ def give_tacos(bot, message, sender, receiver):
     tacos.save()
 
 
-def chat_reply_callback(bot, message):
+async def chat_reply_callback(bot, message):
     """ callback for taco-transfer """
 
     store_name(message)
@@ -103,7 +103,7 @@ def chat_reply_callback(bot, message):
     sender = message.from_user
     receiver = message.reply_to_message.from_user
 
-    give_tacos(bot, message, sender, receiver)
+    await give_tacos(bot, message, sender, receiver)
 
 
 chat_reply_handler = MessageHandler(
@@ -111,7 +111,7 @@ chat_reply_handler = MessageHandler(
 )
 
 
-def taco_mention_callback(bot, message):
+async def taco_mention_callback(bot, message):
     """ callback for taco-transfer by mention """
 
     cid = get_cid(message)

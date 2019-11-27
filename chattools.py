@@ -1,22 +1,22 @@
 from dbmodels import Usernames
 
 
-def get_uid(message):
+async def get_uid(message):
     """ this makes your life easier """
     return message.from_user.id
 
 
-def get_cid(message):
+async def get_cid(message):
     """ this makes your life easier """
     return message.chat.id
+""
 
-
-def get_mid(message):
+async def get_mid(message):
     """ this makes your life easier """
     return message.message_id
 
 
-def store_name(message):
+async def store_name(message):
     """ this function is here only for /tacotop """
 
     uid = get_uid(message)
@@ -45,7 +45,7 @@ def store_name(message):
     return name
 
 
-def resolve_name(uid):                                                               # returns username if present in DB
+async def resolve_name(uid):                                                               # returns username if present in DB
     user = Usernames.select().where(Usernames.uid == uid)
     if user.exists():
         return user.get().name
@@ -53,7 +53,7 @@ def resolve_name(uid):                                                          
         return uid
 
 
-def ensure_username(name: str):
+async def ensure_username(name: str):
     """
     Forces an @ sign to be inserted at the beginning of the passed `name`
     :param name: A telegram username
@@ -61,5 +61,5 @@ def ensure_username(name: str):
     return '@' + ensure_no_at_sign(name)
 
 
-def ensure_no_at_sign(name: str):
+async def ensure_no_at_sign(name: str):
     return name.lstrip('@')

@@ -13,18 +13,17 @@ def new_chat_callback(bot, message):
 
     invited_by = message.from_user
 
-    Chats.create(cid=cid,
-                 invited_by=invited_by.id)
+    Chats.create(cid=cid, invited_by=invited_by.id)
 
     Tacos.create(chat=cid)
 
-    bot.send_message(cid,
-                     chat_enabled_phrase,
-                     parse_mode='html')
+    bot.send_message(cid, chat_enabled_phrase, parse_mode="html")
 
 
-new_chat_handler = MessageHandler(callback=new_chat_callback,
-                                  filters=Filters.group & ~filter_new_chat & ~filter_self_kicked)
+new_chat_handler = MessageHandler(
+    callback=new_chat_callback,
+    filters=Filters.group & ~filter_new_chat & ~filter_self_kicked,
+)
 
 
 def self_kick_callback(bot, message):
@@ -43,10 +42,12 @@ def self_kick_callback(bot, message):
             tacos.get().delete_instance()
 
         chat_title = message.chat.title
-        bot.send_message(invited_by,
-                         data_deleted_phrase.format(chat_title),
-                         parse_mode='html')
+        bot.send_message(
+            invited_by, data_deleted_phrase.format(chat_title), parse_mode="html"
+        )
 
 
-self_kick_handler = MessageHandler(callback=self_kick_callback,
-                                   filters=Filters.group & Filters.left_chat_member & filter_self_kicked)
+self_kick_handler = MessageHandler(
+    callback=self_kick_callback,
+    filters=Filters.group & Filters.left_chat_member & filter_self_kicked,
+)

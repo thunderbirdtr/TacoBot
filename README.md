@@ -1,6 +1,6 @@
-# TacoBot for Telegram
+# Async TeaGuyBot for Telegram
 
-This is a port of HeyTaco Bot (Slack) for Telegram.
+This is a port of HeyTaco Bot (Slack) and TacoBot for Telegram.
 
 ## Installation
 
